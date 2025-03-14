@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # FeiFei's 统计学计算器
 
 一个专为统计学学习设计的在线计算器，支持基础计算和统计计算功能。
@@ -50,3 +51,6 @@ python -m http.server
 - HTML5
 - CSS3
 - JavaScript (原生)
+=======
+# online-caluculator
+>>>>>>> fe1ca50cdefa3adcfb66240c75dcc41c689be79b
