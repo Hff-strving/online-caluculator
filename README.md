@@ -26,7 +26,7 @@
 
 ## 在线使用
 
-访问 https://[您的GitHub用户名].github.io/[仓库名] 即可使用计算器。
+访问 (https://hff-strving.github.io/online-caluculator/) 即可使用计算器。
 
 ## 本地运行
 
@@ -52,5 +52,3 @@ python -m http.server
 - CSS3
 - JavaScript (原生)
 =======
-# online-caluculator
->>>>>>> fe1ca50cdefa3adcfb66240c75dcc41c689be79b
