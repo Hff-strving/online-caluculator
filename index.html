@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeiFei's 统计学计算器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>统计学计算器</h1>
+        <div class="calculator-section">
+            <input type="text" id="basicInput" class="calc-display">
+            <div class="calc-buttons">
+                <button onclick="appendOperator('(')">(</button>
+                <button onclick="appendOperator(')')">)</button>
+                <button onclick="appendOperator('^')">x^n</button>
+                <button onclick="appendOperator('√')">√</button>
+                
+                <button onclick="appendNumber('7')">7</button>
+                <button onclick="appendNumber('8')">8</button>
+                <button onclick="appendNumber('9')">9</button>
+                <button onclick="appendOperator('/')">/</button>
+                
+                <button onclick="appendNumber('4')">4</button>
+                <button onclick="appendNumber('5')">5</button>
+                <button onclick="appendNumber('6')">6</button>
+                <button onclick="appendOperator('*')">×</button>
+                
+                <button onclick="appendNumber('1')">1</button>
+                <button onclick="appendNumber('2')">2</button>
+                <button onclick="appendNumber('3')">3</button>
+                <button onclick="appendOperator('-')">-</button>
+                
+                <button onclick="appendNumber('0')">0</button>
+                <button onclick="appendNumber('.')">.</button>
+                <button onclick="appendOperator('%')">%</button>
+                <button onclick="appendOperator('+')">+</button>
+                
+                <button onclick="clearBasicCalc()" class="clear-btn">C</button>
+                <button onclick="reciprocal()" class="function-btn">1/x</button>
+                <button onclick="deleteLastChar()" class="function-btn">←</button>
+                <button onclick="calculate('basic')" class="equal-btn">=</button>
+            </div>
+        </div>
+        <div class="stats-section">
+            <h2>统计计算</h2>
+            <textarea id="dataInput" placeholder="请输入数据，支持多种格式：
+1. 用逗号分隔：1,2,3 或 1，2，3
+2. 用空格分隔：1 2 3
+3. 用回车分隔：
+1
+2
+3"></textarea>
+            <div class="buttons">
+                <button onclick="calculate('mean')">计算均值</button>
+                <button onclick="calculate('variance')">计算方差</button>
+                <button onclick="calculate('stdDev')">计算标准差</button>
+                <button onclick="calculate('covariance')">计算协方差</button>
+                <button onclick="calculate('deviation')">计算离差</button>
+                <button onclick="clearData()">清除数据</button>
+            </div>
+        </div>
+        <div class="result-section">
+            <h2>计算结果</h2>
+            <div id="result"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
