@@ -45,25 +45,20 @@
         </div>
         <div class="stats-section">
             <h2>统计计算</h2>
-            <textarea id="dataInput" placeholder="请输入数据，支持多种格式：
-1. 用逗号分隔：1,2,3 或 1，2，3
-2. 用空格分隔：1 2 3
-3. 用回车分隔：
-1
-2
-3"></textarea>
+            <textarea id="dataInput1" placeholder="请输入第一组数据（支持空格、逗号、换行分隔，支持中英文标点）"></textarea>
+            <textarea id="dataInput2" placeholder="请输入第二组数据（用于计算协方差时使用）"></textarea>
             <div class="buttons">
                 <button onclick="calculate('mean')">计算均值</button>
                 <button onclick="calculate('variance')">计算方差</button>
                 <button onclick="calculate('stdDev')">计算标准差</button>
-                <button onclick="calculate('covariance')">计算协方差</button>
                 <button onclick="calculate('deviation')">计算离差</button>
-                <button onclick="clearData()">清除数据</button>
+                <button onclick="calculate('covariance')" class="function-btn">计算协方差</button>
+                <button onclick="clearData()" class="clear-btn">清除数据</button>
             </div>
+            <div id="result"></div>
         </div>
         <div class="result-section">
             <h2>计算结果</h2>
-            <div id="result"></div>
         </div>
     </div>
     <script src="script.js"></script>

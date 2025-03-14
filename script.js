@@ -171,62 +171,67 @@ function calculate(type) {
         return;
     }
     
-    const input = document.getElementById('dataInput').value;
-    const data = parseData(input);
+    const input1 = document.getElementById('dataInput1').value;
+    const data1 = parseData(input1);
     const result = document.getElementById('result');
     
-    if (data.length === 0) {
+    if (data1.length === 0) {
         result.innerHTML = "请输入有效的数据";
         return;
     }
 
     switch(type) {
         case 'mean':
-            result.innerHTML = `均值: ${calculateMean(data).toFixed(4)}`;
+            result.innerHTML = `均值: ${calculateMean(data1).toFixed(4)}`;
             break;
         case 'variance':
-            result.innerHTML = `方差: ${calculateVariance(data).toFixed(4)}`;
+            result.innerHTML = `方差: ${calculateVariance(data1).toFixed(4)}`;
             break;
         case 'stdDev':
-            result.innerHTML = `标准差: ${calculateStdDev(data).toFixed(4)}`;
+            result.innerHTML = `标准差: ${calculateStdDev(data1).toFixed(4)}`;
             break;
         case 'deviation':
-            const deviations = calculateDeviation(data);
+            const deviations = calculateDeviation(data1);
             result.innerHTML = `离差: [${deviations.map(d => d.toFixed(4)).join(', ')}]`;
             break;
         case 'covariance':
-            calculateCovariance(data);
+            const input2 = document.getElementById('dataInput2').value;
+            const data2 = parseData(input2);
+            
+            if (data2.length === 0) {
+                result.innerHTML = "请在第二个输入框中输入数据";
+                return;
+            }
+            
+            if (data1.length !== data2.length) {
+                result.innerHTML = "错误：两组数据的长度必须相同";
+                return;
+            }
+            
+            const covariance = calculateCovariance(data1, data2);
+            result.innerHTML = `协方差: ${covariance.toFixed(4)}`;
             break;
     }
 }
 
 // 数据处理函数
 function parseData(input) {
-    // 处理中文逗号
-    input = input.replace(/，/g, ',');
-    
-    // 分割方式：
-    // 1. 逗号分隔
-    // 2. 空格分隔
-    // 3. 换行分隔
-    const numbers = input
-        .split(/[\n,\s]+/)
-        .map(str => str.trim())
-        .filter(str => str !== '')
-        .map(Number);
-    
-    return numbers.filter(num => !isNaN(num));
+    // 处理中英文逗号、空格和换行符
+    const cleanedInput = input.replace(/，/g, ',');
+    const numbers = cleanedInput.split(/[,\s\n]+/).filter(str => str.trim() !== '');
+    return numbers.map(num => parseFloat(num)).filter(num => !isNaN(num));
 }
 
 // 计算均值
 function calculateMean(data) {
-    return data.reduce((a, b) => a + b, 0) / data.length;
+    return data.reduce((sum, val) => sum + val, 0) / data.length;
 }
 
 // 计算方差
 function calculateVariance(data) {
     const mean = calculateMean(data);
-    return data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / data.length;
+    // 修改为样本方差，除以(n-1)
+    return data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (data.length - 1);
 }
 
 // 计算标准差
@@ -237,39 +242,22 @@ function calculateStdDev(data) {
 // 计算离差
 function calculateDeviation(data) {
     const mean = calculateMean(data);
-    return data.map(x => x - mean);
+    return data.map(val => val - mean);
 }
 
 // 计算协方差
-function calculateCovariance(data) {
-    const input = document.createElement('textarea');
-    input.placeholder = "请输入第二组数据（支持相同的多种输入格式）";
-    input.style.marginTop = "10px";
-    input.style.marginBottom = "10px";
-    document.querySelector('.stats-section').insertBefore(input, document.getElementById('result'));
-    
-    input.addEventListener('change', () => {
-        const data1 = parseData(document.getElementById('dataInput').value);
-        const data2 = parseData(input.value);
-        
-        if (data1.length !== data2.length) {
-            document.getElementById('result').innerHTML = "错误：两组数据长度必须相同";
-            return;
-        }
-        
-        const mean1 = calculateMean(data1);
-        const mean2 = calculateMean(data2);
-        const covariance = data1.reduce((acc, val, i) => 
-            acc + (val - mean1) * (data2[i] - mean2), 0) / data1.length;
-        
-        document.getElementById('result').innerHTML = `协方差: ${covariance.toFixed(4)}`;
-        input.remove();
-    });
+function calculateCovariance(data1, data2) {
+    const mean1 = calculateMean(data1);
+    const mean2 = calculateMean(data2);
+    // 修改为样本协方差，除以(n-1)
+    return data1.reduce((acc, val, i) => 
+        acc + (val - mean1) * (data2[i] - mean2), 0) / (data1.length - 1);
 }
 
 // 清除数据
 function clearData() {
-    document.getElementById('dataInput').value = '';
+    document.getElementById('dataInput1').value = '';
+    document.getElementById('dataInput2').value = '';
     document.getElementById('result').innerHTML = '';
 }
 
