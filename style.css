@@ -1,11 +1,10 @@
 :root {
-    --primary-color: #FFB6C1;
-    --secondary-color: #FFC0CB;
-    --accent-color: #FF69B4;
-    --text-color: #333;
-    --background-color: #FFF0F5;
-    --function-color: #FF1493;
-    --shadow-color: rgba(255, 105, 180, 0.2);
+    --primary-color: #FFB6C1;  /* 更柔和的粉色 */
+    --accent-color: #FF9AA2;   /* 柔和的珊瑚粉 */
+    --function-color: #FFB7B2; /* 柔和的玫瑰粉 */
+    --background-color: #FFF5F5; /* 非常浅的粉色背景 */
+    --text-color: #4A4A4A;     /* 柔和的深灰色文字 */
+    --shadow-color: rgba(255, 182, 193, 0.2); /* 柔和的粉色阴影 */
 }
 
 body {
@@ -80,49 +79,48 @@ h2 {
 .calc-buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    padding: 10px;
+    gap: 10px;
+    padding: 15px;
+    background-color: var(--background-color);
+    border-radius: 10px;
 }
 
 .calc-buttons button {
-    padding: 18px;
-    font-size: 18px;
+    padding: 15px;
+    font-size: 1.2em;
     border: none;
-    border-radius: 12px;
-    background-color: var(--primary-color);
+    border-radius: 8px;
+    background-color: white;
     color: var(--text-color);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     box-shadow: 0 2px 5px var(--shadow-color);
-    font-weight: 500;
+}
+
+.calc-buttons .function-btn {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.calc-buttons .clear-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+.calc-buttons .equal-btn {
+    background-color: var(--function-color);
+    color: var(--text-color);
 }
 
 .calc-buttons button:hover {
-    background-color: var(--accent-color);
-    color: white;
     transform: translateY(-2px);
+    filter: brightness(1.05);
     box-shadow: 0 4px 10px var(--shadow-color);
 }
 
 .calc-buttons button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 5px var(--shadow-color);
-}
-
-.clear-btn {
-    background-color: var(--accent-color) !important;
-    color: white !important;
-}
-
-.function-btn {
-    background-color: var(--function-color) !important;
-    color: white !important;
-}
-
-.equal-btn {
-    background-color: var(--accent-color) !important;
-    color: white !important;
-    font-weight: bold !important;
+    filter: brightness(0.95);
 }
 
 .stats-section {
@@ -200,6 +198,103 @@ textarea:focus {
     border: 2px solid var(--primary-color);
     font-size: 16px;
     line-height: 1.5;
+}
+
+.history-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    margin-bottom: 2rem;
+}
+
+.history-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+#historyList {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    background-color: white;
+}
+
+.history-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-color);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.history-item:hover {
+    transform: translateX(5px);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.history-item:active {
+    transform: translateX(8px);
+    background-color: var(--accent-color);
+}
+
+.history-item::after {
+    content: '点击恢复';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    color: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.history-item:hover::after {
+    opacity: 1;
+    color: white;
+}
+
+.history-item .timestamp {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.history-item .expression {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.history-item .result {
+    color: var(--function-color);
+    font-weight: bold;
+}
+
+/* 自定义滚动条样式 */
+#historyList::-webkit-scrollbar {
+    width: 8px;
+}
+
+#historyList::-webkit-scrollbar-track {
+    background: var(--background-color);
+    border-radius: 4px;
+}
+
+#historyList::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+#historyList::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
 }
 
 @media (max-width: 768px) {

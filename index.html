@@ -8,38 +8,39 @@
 </head>
 <body>
     <div class="calculator-container">
-        <h1>统计学计算器</h1>
+        <h1>FeiFei's 统计学计算器</h1>
         <div class="calculator-section">
-            <input type="text" id="basicInput" class="calc-display">
+            <h2>基础计算</h2>
+            <input type="text" id="basicInput" class="calc-display" placeholder="请输入表达式">
             <div class="calc-buttons">
                 <button onclick="appendOperator('(')">(</button>
                 <button onclick="appendOperator(')')">)</button>
-                <button onclick="appendOperator('^')">x^n</button>
-                <button onclick="appendOperator('√')">√</button>
-                
+                <button onclick="clearBasicCalc()" class="clear-btn">C</button>
+                <button onclick="backspace()">←</button>
+
+                <button onclick="appendOperator('^')" class="function-btn">x^n</button>
+                <button onclick="appendOperator('√')" class="function-btn">√</button>
+                <button onclick="appendOperator('%')" class="function-btn">%</button>
+                <button onclick="appendOperator('/')" class="function-btn">/</button>
+
                 <button onclick="appendNumber('7')">7</button>
                 <button onclick="appendNumber('8')">8</button>
                 <button onclick="appendNumber('9')">9</button>
-                <button onclick="appendOperator('/')">/</button>
-                
+                <button onclick="appendOperator('*')" class="function-btn">×</button>
+
                 <button onclick="appendNumber('4')">4</button>
                 <button onclick="appendNumber('5')">5</button>
                 <button onclick="appendNumber('6')">6</button>
-                <button onclick="appendOperator('*')">×</button>
-                
+                <button onclick="appendOperator('-')" class="function-btn">-</button>
+
                 <button onclick="appendNumber('1')">1</button>
                 <button onclick="appendNumber('2')">2</button>
                 <button onclick="appendNumber('3')">3</button>
-                <button onclick="appendOperator('-')">-</button>
-                
+                <button onclick="appendOperator('+')" class="function-btn">+</button>
+
+                <button onclick="reciprocal()" class="function-btn">1/x</button>
                 <button onclick="appendNumber('0')">0</button>
                 <button onclick="appendNumber('.')">.</button>
-                <button onclick="appendOperator('%')">%</button>
-                <button onclick="appendOperator('+')">+</button>
-                
-                <button onclick="clearBasicCalc()" class="clear-btn">C</button>
-                <button onclick="reciprocal()" class="function-btn">1/x</button>
-                <button onclick="deleteLastChar()" class="function-btn">←</button>
                 <button onclick="calculate('basic')" class="equal-btn">=</button>
             </div>
         </div>
@@ -57,8 +58,12 @@
             </div>
             <div id="result"></div>
         </div>
-        <div class="result-section">
-            <h2>计算结果</h2>
+        <div class="history-section">
+            <h2>计算历史</h2>
+            <div class="history-controls">
+                <button onclick="clearHistory()" class="clear-btn">清除历史</button>
+            </div>
+            <div id="historyList"></div>
         </div>
     </div>
     <script src="script.js"></script>

@@ -149,6 +149,91 @@ function evaluateExpression(expr) {
     return result;
 }
 
+// 历史记录相关函数
+function addToHistory(type, expression, result) {
+    // 从localStorage获取现有历史记录
+    let history = JSON.parse(localStorage.getItem('calculatorHistory') || '[]');
+    
+    // 创建新的历史记录项
+    const historyItem = {
+        type: type,
+        expression: expression,
+        result: result,
+        timestamp: new Date().toLocaleString('zh-CN')
+    };
+    
+    // 将新记录添加到开头
+    history.unshift(historyItem);
+    
+    // 限制历史记录数量为最新的50条
+    if (history.length > 50) {
+        history = history.slice(0, 50);
+    }
+    
+    // 保存到localStorage
+    localStorage.setItem('calculatorHistory', JSON.stringify(history));
+    
+    // 更新显示
+    displayHistory();
+}
+
+function displayHistory() {
+    const historyList = document.getElementById('historyList');
+    const history = JSON.parse(localStorage.getItem('calculatorHistory') || '[]');
+    
+    historyList.innerHTML = history.map(item => `
+        <div class="history-item" onclick="restoreCalculation('${encodeURIComponent(JSON.stringify(item))}')">
+            <div class="timestamp">${item.timestamp}</div>
+            <div class="expression">${item.type === 'basic' ? '表达式' : '统计计算'}: ${item.expression}</div>
+            <div class="result">结果: ${item.result}</div>
+        </div>
+    `).join('');
+}
+
+function restoreCalculation(itemJson) {
+    const item = JSON.parse(decodeURIComponent(itemJson));
+    
+    if (item.type === 'basic') {
+        // 恢复基础计算
+        const input = document.getElementById('basicInput');
+        input.value = item.expression;
+        input.focus();
+        // 将光标移到最后
+        input.setSelectionRange(input.value.length, input.value.length);
+    } else {
+        // 恢复统计计算
+        const data = item.expression.match(/\[(.*?)\]/g);
+        if (data) {
+            if (item.expression.includes('协方差')) {
+                // 处理协方差的两组数据
+                const datasets = item.expression.match(/\[(.*?)\]/g);
+                if (datasets && datasets.length >= 2) {
+                    const data1 = datasets[0].slice(1, -1);  // 移除 [ ]
+                    const data2 = datasets[1].slice(1, -1);  // 移除 [ ]
+                    document.getElementById('dataInput1').value = data1;
+                    document.getElementById('dataInput2').value = data2;
+                }
+            } else {
+                // 处理单组数据的统计计算
+                const cleanData = data[0].slice(1, -1);  // 移除 [ ]
+                document.getElementById('dataInput1').value = cleanData;
+                document.getElementById('dataInput2').value = '';
+            }
+        }
+    }
+    
+    // 滚动到相应的计算区域
+    const section = item.type === 'basic' ? 'calculator-section' : 'stats-section';
+    document.querySelector(`.${section}`).scrollIntoView({ behavior: 'smooth' });
+}
+
+function clearHistory() {
+    if (confirm('确定要清除所有历史记录吗？')) {
+        localStorage.removeItem('calculatorHistory');
+        displayHistory();
+    }
+}
+
 // 主计算函数
 function calculate(type) {
     if (type === 'basic') {
@@ -164,6 +249,10 @@ function calculate(type) {
             
             const result = evaluateExpression(expression);
             input.value = result.toString();
+            
+            // 添加到历史记录
+            addToHistory('basic', expression, result);
+            
             input.focus();
         } catch (e) {
             alert('计算错误，请检查输入！');
@@ -180,19 +269,29 @@ function calculate(type) {
         return;
     }
 
+    let calculationResult;
+    let expressionText;
+
     switch(type) {
         case 'mean':
-            result.innerHTML = `均值: ${calculateMean(data1).toFixed(4)}`;
+            calculationResult = calculateMean(data1);
+            result.innerHTML = `均值: ${calculationResult.toFixed(4)}`;
+            expressionText = `均值计算: [${data1.join(', ')}]`;
             break;
         case 'variance':
-            result.innerHTML = `方差: ${calculateVariance(data1).toFixed(4)}`;
+            calculationResult = calculateVariance(data1);
+            result.innerHTML = `方差: ${calculationResult.toFixed(4)}`;
+            expressionText = `方差计算: [${data1.join(', ')}]`;
             break;
         case 'stdDev':
-            result.innerHTML = `标准差: ${calculateStdDev(data1).toFixed(4)}`;
+            calculationResult = calculateStdDev(data1);
+            result.innerHTML = `标准差: ${calculationResult.toFixed(4)}`;
+            expressionText = `标准差计算: [${data1.join(', ')}]`;
             break;
         case 'deviation':
-            const deviations = calculateDeviation(data1);
-            result.innerHTML = `离差: [${deviations.map(d => d.toFixed(4)).join(', ')}]`;
+            calculationResult = calculateDeviation(data1);
+            result.innerHTML = `离差: [${calculationResult.map(d => d.toFixed(4)).join(', ')}]`;
+            expressionText = `离差计算: [${data1.join(', ')}]`;
             break;
         case 'covariance':
             const input2 = document.getElementById('dataInput2').value;
@@ -208,10 +307,14 @@ function calculate(type) {
                 return;
             }
             
-            const covariance = calculateCovariance(data1, data2);
-            result.innerHTML = `协方差: ${covariance.toFixed(4)}`;
+            calculationResult = calculateCovariance(data1, data2);
+            result.innerHTML = `协方差: ${calculationResult.toFixed(4)}`;
+            expressionText = `协方差计算: [${data1.join(', ')}] 和 [${data2.join(', ')}]`;
             break;
     }
+
+    // 添加到历史记录
+    addToHistory('stats', expressionText, result.innerHTML);
 }
 
 // 数据处理函数
@@ -263,6 +366,8 @@ function clearData() {
 
 // 添加键盘事件监听
 document.addEventListener('DOMContentLoaded', function() {
+    displayHistory();
+    
     const input = document.getElementById('basicInput');
     
     input.addEventListener('keydown', function(e) {
@@ -270,17 +375,8 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             calculate('basic');
         } else if (e.key === 'Backspace') {
-            // 让浏览器默认处理退格键
+            // 不阻止默认的退格键行为
             return;
-        } else if (e.key === 'Delete') {
-            // 让浏览器默认处理删除键
-            return;
-        } else if (/[\d+\-*/.()%^]/.test(e.key)) {
-            // 让浏览器默认处理数字和运算符
-            return;
-        } else {
-            // 阻止其他按键
-            e.preventDefault();
         }
     });
 });
