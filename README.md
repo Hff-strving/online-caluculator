@@ -45,12 +45,10 @@ cd [仓库名]
 python -m http.server
 ```
 
-4. 在浏览器中访问 `http://localhost:8000`
+4. 在浏览器中访问 `[https://hff-strving.github.io/online-caluculator/]`
 
 ## 技术栈
 - HTML5
 - CSS3
 - JavaScript (原生)
 =======
-# online-caluculator
->>>>>>> fe1ca50cdefa3adcfb66240c75dcc41c689be79b
